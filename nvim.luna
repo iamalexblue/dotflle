@@ -127,6 +127,10 @@ keymap({'n', 'v'}, 'H', '0', { desc = "绝对行首" })
 keymap({'n', 'v'}, 'L', '$', { desc = "绝对行末" })
 -- (注：大写 I 和 A 依然保持原生逻辑：跳转到内容边缘并编辑)
 
+-- 📖 极速翻页 (Page Navigation)
+-- 用空格 + j/k 实现半页翻转，比 Ctrl 更近
+keymap({'n', 'v'}, '<leader>j', '<C-d>', { desc = "向下翻半页" })
+keymap({'n', 'v'}, '<leader>k', '<C-u>', { desc = "向上翻半页" })
 
 -- 🛠️ C. 功能扩展 (Leader 键组合技)
 -- 空格 + o : 切换右侧大纲 (Outline)
@@ -135,6 +139,13 @@ keymap('n', '<leader>o', ':SymbolsOutline<CR>', { desc = "切换代码大纲" })
 keymap('n', '<leader>u', vim.cmd.UndotreeToggle, { desc = "开启撤销历史树" })
 -- 快速开启终端的快捷键 (空格 + t)
 keymap('n', '<leader>t', ':split | term<CR>', { desc = "下方开启终端" })
+-- 🪟 窗口跳转 (上帝视角：无论在哪都能一键横跳)
+-- 无论是在 Normal 模式还是 Terminal 模式，Ctrl + h/j/k/l 都能直接换窗口
+local window_opts = { desc = "极速切换窗口" }
+keymap({'n', 't'}, '<C-h>', [[<C-\><C-n><C-w>h]], window_opts)
+keymap({'n', 't'}, '<C-j>', [[<C-\><C-n><C-w>j]], window_opts)
+keymap({'n', 't'}, '<C-k>', [[<C-\><C-n><C-w>k]], window_opts)
+keymap({'n', 't'}, '<C-l>', [[<C-\><C-n><C-w>l]], window_opts)
 -- 🚀 热重载配置 (空格 + s)
 keymap("n", "<leader>s", function()
     vim.cmd("source $MYVIMRC")
