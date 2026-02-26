@@ -12,7 +12,16 @@
 -- ==========================================================================
 vim.g.mapleader = " "         -- 唯一的领航键
 vim.g.deprecation_warnings = false -- 🤫 屏蔽烦人的弃用警告 (lsp.buf_get_clients 等)
+vim.api.nvim_create_autocmd("LspTokenUpdate", { callback = function() end }) -- 额外加固
 local opt = vim.opt
+-- 🚫 禁用不需要的 Provider，消除 checkhealth 警告并加速启动
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+-- 🤫 深度屏蔽弃用警告 (针对你报告中的 vim.lsp.buf_get_clients)
+vim.g.deprecation_warnings = false
 opt.number = true             -- 显示行号
 opt.mouse = 'a'               -- 开启鼠标支持
 opt.termguicolors = true      -- 开启真彩色支持
@@ -139,20 +148,30 @@ keymap('n', '<leader>o', ':SymbolsOutline<CR>', { desc = "切换代码大纲" })
 keymap('n', '<leader>u', vim.cmd.UndotreeToggle, { desc = "开启撤销历史树" })
 -- 快速开启终端的快捷键 (空格 + t)
 keymap('n', '<leader>t', ':split | term<CR>', { desc = "下方开启终端" })
--- 🪟 窗口跳转 (上帝视角：无论在哪都能一键横跳)
--- 无论是在 Normal 模式还是 Terminal 模式，Ctrl + h/j/k/l 都能直接换窗口
-local window_opts = { desc = "极速切换窗口" }
-keymap({'n', 't'}, '<C-h>', [[<C-\><C-n><C-w>h]], window_opts)
-keymap({'n', 't'}, '<C-j>', [[<C-\><C-n><C-w>j]], window_opts)
-keymap({'n', 't'}, '<C-k>', [[<C-\><C-n><C-w>k]], window_opts)
-keymap({'n', 't'}, '<C-l>', [[<C-\><C-n><C-w>l]], window_opts)
+
+-- 🪟 D. 窗口穿梭 (realexblue 终极免配置方案)
+local win_opts = { noremap = true, silent = true }
+
+-- 1. 普通模式跳转 (保持原样)
+keymap('n', '<C-h>', '<C-w>h', win_opts)
+keymap('n', '<C-j>', '<C-w>j', win_opts)
+keymap('n', '<C-k>', '<C-w>k', win_opts)
+keymap('n', '<C-l>', '<C-w>l', win_opts)
+
+-- 2. 终端模式：绕过被拦截的 Ctrl 键
+-- 在终端里飞速按 jk 接着按 k，就能跳回上面的窗口
+keymap('t', 'jkk', [[<C-\><C-n><C-w>k]], win_opts)
+keymap('t', 'jkj', [[<C-\><C-n><C-w>j]], win_opts)
+keymap('t', 'jkh', [[<C-\><C-n><C-w>h]], win_opts)
+keymap('t', 'jkl', [[<C-\><C-n><C-w>l]], win_opts)
+
 -- 🚀 热重载配置 (空格 + s)
 keymap("n", "<leader>s", function()
     vim.cmd("source $MYVIMRC")
     vim.notify("配置已重载！Gruvbox 依然在线 🚀", vim.log.levels.INFO)
 end)
 
--- 🌊 D. 平滑滚动优化 (光标纹丝不动，屏幕丝般顺滑)
+-- 🌊 E. 平滑滚动优化 (光标纹丝不动，屏幕丝般顺滑)
 local scroll_opts = { silent = true }
 keymap('n', '<ScrollWheelUp>', '<C-y>', scroll_opts)
 keymap('n', '<ScrollWheelDown>', '<C-e>', scroll_opts)
