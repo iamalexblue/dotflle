@@ -20,8 +20,6 @@ vim.g.loaded_python3_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- 🤫 深度屏蔽弃用警告 (针对你报告中的 vim.lsp.buf_get_clients)
-vim.g.deprecation_warnings = false
 opt.number = true             -- 显示行号
 opt.mouse = 'a'               -- 开启鼠标支持
 opt.termguicolors = true      -- 开启真彩色支持
